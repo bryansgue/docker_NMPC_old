@@ -1,0 +1,35 @@
+services:
+  ros1_dualquat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID:-1000}
+        USER_GID: ${GID:-1000}
+
+    container_name: ros1_dualquat
+    hostname: uav_ros1
+
+    working_dir: /home/uav
+    stdin_open: true
+    tty: true
+
+    network_mode: host
+    ipc: host
+
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: /home/uav/.Xauthority
+      ROS_MASTER_URI: http://localhost:11311
+      ROS_IP: 127.0.0.1
+
+    volumes:
+      - ${HOME}/catkin_ws:/home/uav/catkin_ws
+      - /home/bryansgue/dev/Python:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/home/uav/.Xauthority:rw
+
+    user: "${UID:-1000}:${GID:-1000}"
+
+    command: bash
